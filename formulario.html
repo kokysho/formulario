@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingrese su Apuesta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #555;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="apuestaForm">
+    <h1>Ingrese su Apuesta</h1>
+
+    <label for="apostador">Nombre del Apostador:</label>
+    <select id="apostador" name="apostador" required>
+      <option value="" disabled selected>Seleccionar Apostador</option>
+      <option value="guillermo_larrazabal">Guillermo Larrazábal</option>
+      <option value="juan_soto">Juan Soto</option>
+      <option value="santiago_silva">Santiago Silva</option>
+      <option value="gabito">Gabito</option>
+      <option value="francisco_donoso">Francisco Donoso</option>
+      <option value="titin">Titin</option>
+    </select>
+
+    <label for="equipo_local">Equipo Local:</label>
+    <select id="equipo_local" name="equipo_local" required>
+      <!-- Opciones de equipos locales -->
+    </select>
+
+    <label for="goles_equipo_local">Goles de Equipo Local:</label>
+    <textarea id="goles_equipo_local" name="goles_equipo_local" maxlength="25" required></textarea>
+
+    <label for="equipo_visitante">Equipo Visitante:</label>
+    <select id="equipo_visitante" name="equipo_visitante" required>
+      <!-- Opciones de equipos visitantes -->
+    </select>
+
+    <label for="goles_equipo_visitante">Goles de Equipo Visitante:</label>
+    <textarea id="goles_equipo_visitante" name="goles_equipo_visitante" maxlength="25" required></textarea>
+
+    <button type="button" onclick="enviarDatos()">Enviar</button>
+  </form>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Cargar opciones de equipos locales
+      const equipoLocalSelect = document.getElementById("equipo_local");
+      cargarOpcionesEquipos(equipoLocalSelect);
+
+      // Cargar opciones de equipos visitantes
+      const equipoVisitanteSelect = document.getElementById("equipo_visitante");
+      cargarOpcionesEquipos(equipoVisitanteSelect);
+    });
+
+    function cargarOpcionesEquipos(select) {
+      const equipos = [
+        "Audax Italiano", "Cobreloa", "Cobresal", "Colo Colo", "Coquimbo Unido",
+        "Deportes Copiapó", "Deportes Iquique", "Everton", "Huachipato", "Ñublense",
+        "O'Higgins", "Palestino", "Unión Española", "Unión La Calera",
+        "Universidad Católica", "Universidad de Chile"
+      ];
+
+      equipos.forEach(equipo => {
+        const option = document.createElement("option");
+        option.value = equipo.toLowerCase().replace(/\s+/g, "_");
+        option.text = equipo;
+        select.add(option);
+      });
+    }
+
+    function enviarDatos() {
+      console.log("Enviando datos..."); // Agregado para depuración
+      const form = document.getElementById('apuestaForm');
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      console.log('Datos a enviar:', data); // Agregado para depuración
+
+      // Realizar una solicitud POST para enviar datos a Google Sheets
+      fetch('https://script.google.com/macros/s/AKfycbwX3-O0cvK8Imt7NYuP4MYJVicN0yT7H6CvlWsBnR20GVv6RSz3DY8G21jW38j8XNWSIg/exec', {
+        method: 'POST',
+        body: new URLSearchParams(data),
+      })
+      .then(response => response.text())
+      .then(responseData => {
+        console.log('Datos enviados con éxito:', responseData);
+        // Puedes realizar acciones adicionales si es necesario
+      })
+      .catch(error => {
+        console.error('Error al enviar datos:', error);
+      });
+    }
+  </script>
+
+</body>
+</html>
